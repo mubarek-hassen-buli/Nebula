@@ -3,14 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase/client';
+import { useCartStore } from '../../../store/cartStore';
 import { Category, MenuItem, Restaurant } from '../../../types/database';
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { addItem } = useCartStore();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -89,7 +91,14 @@ export default function CustomerHomeScreen() {
         <View style={styles.discountBadge}>
            <Text style={styles.discountText}>20% OFF</Text>
         </View>
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            addItem(item);
+            Alert.alert('Success', 'Added to cart successfully!');
+          }}
+        >
             <Ionicons name="add" size={20} color="#000" />
         </TouchableOpacity>
       </View>

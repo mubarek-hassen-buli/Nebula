@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#FFF' },
   clearText: { color: '#EF4444', fontSize: 14 },
 
-  scrollContent: { paddingHorizontal: 20, paddingBottom: 100 },
+  scrollContent: { paddingHorizontal: 20, paddingBottom: 180 },
   
   itemList: { gap: 16, marginBottom: 30 },
   itemCard: {
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
       padding: 20,
       borderTopLeftRadius: 24,
       borderTopRightRadius: 24,
-      paddingBottom: 40, // For bottom tabs space if needed, roughly
+      paddingBottom: 30, // Adjusted for tab bar spacing
   },
   checkoutBtn: {
       backgroundColor: '#F59E0B',
