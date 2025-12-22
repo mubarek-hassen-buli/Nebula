@@ -44,17 +44,6 @@ export default function CustomerTabsLayout() {
       />
 
       <Tabs.Screen
-        name="spacer"
-        options={{
-          tabBarItemStyle: { display: 'none' },
-          tabBarButton: () => <View style={{ width: 0 }} />, 
-        }}
-        listeners={{
-             tabPress: (e) => e.preventDefault(),
-        }}
-      />
-
-      <Tabs.Screen
         name="profile"
         options={{
           tabBarIcon: ({ color, focused }) => (
@@ -71,8 +60,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F2937', // Darker gray for tab bar
     borderTopWidth: 0,
     elevation: 0,
-    height: Platform.OS === 'ios' ? 85 : 65,
-    paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+    height: Platform.OS === 'ios' ? 90 : 90,
+    paddingBottom: Platform.OS === 'ios' ? 25 : 15,
     position: 'absolute',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
