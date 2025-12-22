@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../../../lib/supabase/client';
 import { useCartStore } from '../../../store/cartStore';
 import { MenuItem } from '../../../types/database';
@@ -31,33 +31,9 @@ export default function DishDetailsScreen() {
   const handleAddToCart = () => {
     if (!item) return;
 
-    if (cartRestaurantId && cartRestaurantId !== item.restaurant_id) {
-        Alert.alert(
-            'Start new basket?',
-            'Adding this item will clear your current basket from another restaurant.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                { 
-                    text: 'New Basket', 
-                    style: 'destructive',
-                    onPress: () => {
-                        clearCart();
-                        // Add item quantity times
-                        for(let i=0; i<quantity; i++) addItem(item);
-                        router.back();
-                    } 
-                 }
-            ]
-        );
-    } else {
-        // Add item quantity times (store logic is simple add 1, so loop or update store to support adding N)
-        // For now, simpler to just loop calls or rely on store to merge.
-        // Better way: Add `addItem(item, qty)` to store. But `addItem` currently just takes item.
-        // We will loop for now or just add once. The user wants "Order Now", which might mean "Add and go to Cart" or just "Add".
-        // Let's assume "Add to Cart" behavior.
-        for(let i=0; i<quantity; i++) addItem(item);
-        router.back();
-    }
+    // Add item quantity times
+    for(let i=0; i<quantity; i++) addItem(item);
+    router.back();
   };
 
   const increment = () => setQuantity(q => q + 1);

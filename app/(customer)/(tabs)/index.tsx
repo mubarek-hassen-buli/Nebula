@@ -51,8 +51,7 @@ export default function CustomerHomeScreen() {
   const renderCategory = ({ item }: { item: Category }) => (
     <TouchableOpacity style={styles.catItem}>
       <View style={styles.catIconContainer}>
-         {/* Placeholder for category icons since we don't store them yet. Using first letter. */}
-         <Text style={styles.catIconText}>{item.name.charAt(0)}</Text>
+         <Text style={styles.catIconText}>{item.emoji || item.name.charAt(0)}</Text>
       </View>
       <Text style={styles.catName}>{item.name}</Text>
     </TouchableOpacity>

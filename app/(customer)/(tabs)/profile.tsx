@@ -6,7 +6,7 @@ import { useAuthStore } from '../../../store/authStore';
 
 export default function CustomerProfileScreen() {
   const router = useRouter();
-  const { profile, signOut } = useAuthStore();
+  const { profile, signOut, user } = useAuthStore();
 
   const handleSignOut = () => {
     Alert.alert('Sign Out', 'Are you sure?', [
@@ -22,8 +22,19 @@ export default function CustomerProfileScreen() {
     ]);
   };
 
-  const renderOption = (icon: any, title: string, showArrow = true, rightElement?: React.ReactNode) => (
-      <TouchableOpacity style={styles.optionRow}>
+  // Get initials from name or email
+  const getInitials = () => {
+    if (profile?.full_name) {
+      return profile.full_name.charAt(0).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return 'G';
+  };
+
+  const renderOption = (icon: any, title: string, onPress?: () => void, showArrow = true, rightElement?: React.ReactNode) => (
+      <TouchableOpacity style={styles.optionRow} onPress={onPress}>
           <View style={styles.optionLeft}>
               <Ionicons name={icon} size={22} color="#FFF" style={{ width: 30 }} />
               <Text style={styles.optionText}>{title}</Text>
@@ -41,12 +52,18 @@ export default function CustomerProfileScreen() {
                   <Image source={{ uri: profile.avatar_url }} style={styles.avatar} />
               ) : (
                   <View style={styles.avatarFallback}>
-                      <Ionicons name="person" size={40} color="#9CA3AF" />
+                      <Text style={styles.avatarInitial}>{getInitials()}</Text>
                   </View>
               )}
-              <View>
-                  <Text style={styles.userName}>{profile?.full_name || 'Guest User'}</Text>
-                  <Text style={styles.userSubtext}>{profile ? 'View Interface' : 'Login to view all features'}</Text>
+              <View style={{ flex: 1 }}>
+                  <Text style={styles.userName}>{profile?.full_name || user?.email || 'Guest User'}</Text>
+                  <Text style={styles.userSubtext}>{user?.email || 'Login to view all features'}</Text>
+                  {profile && (
+                      <View style={styles.rewardBadge}>
+                          <Ionicons name="star" size={14} color="#F59E0B" />
+                          <Text style={styles.rewardText}>{profile.reward_points || 0} Reward Points</Text>
+                      </View>
+                  )}
               </View>
           </View>
       </View>
@@ -54,13 +71,13 @@ export default function CustomerProfileScreen() {
       <ScrollView style={styles.content}>
           <Text style={styles.sectionTitle}>General</Text>
           <View style={styles.sectionCard}>
-              {renderOption("person-outline", "Profile")}
+              {renderOption("person-outline", "Profile", () => router.push('/(customer)/profile/edit' as any))}
               <View style={styles.divider} />
               {renderOption("map-outline", "My Address")}
               <View style={styles.divider} />
               {renderOption("language-outline", "Language")}
               <View style={styles.divider} />
-              {renderOption("moon-outline", "Dark Mode", false, <Switch value={true} trackColor={{false: '#767577', true: '#F59E0B'}} thumbColor={'#f4f3f4'} />)}
+              {renderOption("moon-outline", "Dark Mode", undefined, false, <Switch value={true} trackColor={{false: '#767577', true: '#F59E0B'}} thumbColor={'#f4f3f4'} />)}
           </View>
 
           <Text style={styles.sectionTitle}>Promotional Activity</Text>
@@ -72,7 +89,7 @@ export default function CustomerProfileScreen() {
           <View style={styles.sectionCard}>
               {renderOption("people-outline", "Join as a Delivery Man")}
               <View style={styles.divider} />
-              {renderOption("storefront-outline", "Open Restaurant", true, <Ionicons name="chevron-forward" size={20} color="#6B7280" />)}
+              {renderOption("storefront-outline", "Open Restaurant", undefined, true, <Ionicons name="chevron-forward" size={20} color="#6B7280" />)}
           </View>
           
           <TouchableOpacity style={styles.logoutBtn} onPress={handleSignOut}>
@@ -102,8 +119,15 @@ const styles = StyleSheet.create({
       width: 70, height: 70, borderRadius: 35, backgroundColor: '#FFF', 
       justifyContent: 'center', alignItems: 'center' 
   },
+  avatarInitial: { fontSize: 32, fontWeight: 'bold', color: '#F59E0B' },
   userName: { fontSize: 22, fontWeight: 'bold', color: '#000' },
-  userSubtext: { fontSize: 14, color: '#333' },
+  userSubtext: { fontSize: 14, color: '#333', marginTop: 2 },
+  rewardBadge: { 
+      flexDirection: 'row', alignItems: 'center', gap: 4, 
+      marginTop: 6, backgroundColor: '#000', paddingHorizontal: 8, 
+      paddingVertical: 4, borderRadius: 12, alignSelf: 'flex-start' 
+  },
+  rewardText: { fontSize: 12, fontWeight: 'bold', color: '#FFF' },
 
   content: { padding: 20 },
   sectionTitle: { color: '#F59E0B', fontSize: 16, fontWeight: 'bold', marginBottom: 12, marginTop: 8 },

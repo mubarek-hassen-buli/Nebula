@@ -2,9 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase/client';
+import { useAuthStore } from '../../../store/authStore';
 
 // Define status steps
 const STATUS_STEPS = ['Pending', 'Preparing', 'Out for Delivery', 'Delivered'];
@@ -14,8 +15,15 @@ export default function OrderTrackingScreen() {
   const orderId = typeof id === 'string' ? id : '';
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { profile } = useAuthStore();
 
   const [realtimeStatus, setRealtimeStatus] = useState<string | null>(null);
+  
+  // Rating State
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   // 1. Fetch Order Details
   const { data: order, isLoading: isOrderLoading } = useQuery({
@@ -66,6 +74,46 @@ export default function OrderTrackingScreen() {
   const currentStatus = realtimeStatus || order?.status || 'Pending';
   const activeStepIndex = STATUS_STEPS.indexOf(currentStatus);
 
+  // 3. Check if already reviewed
+  useEffect(() => {
+    if (order?.restaurant_id && profile?.id && currentStatus === 'Delivered') {
+        const checkReview = async () => {
+            const { data } = await supabase.from('reviews')
+                .select('*')
+                .eq('user_id', profile.id)
+                .eq('restaurant_id', order.restaurant_id)
+                .maybeSingle(); 
+            if (data) setHasReviewed(true);
+        };
+        checkReview();
+    }
+  }, [order, profile, currentStatus]);
+
+  const handleSubmitReview = async () => {
+      if (rating === 0) {
+          Alert.alert('Error', 'Please select a rating');
+          return;
+      }
+      setIsSubmittingReview(true);
+      try {
+          const { error } = await supabase.from('reviews').insert({
+              user_id: profile?.id,
+              restaurant_id: order.restaurants?.id,
+              rating,
+              comment
+          } as any);
+
+          if (error) throw error;
+          
+          Alert.alert('Success', 'Thank you for your feedback!');
+          setHasReviewed(true);
+      } catch (e: any) {
+          Alert.alert('Error', e.message);
+      } finally {
+          setIsSubmittingReview(false);
+      }
+  };
+
   if (isOrderLoading || !order) {
       return <View style={styles.loading}><ActivityIndicator color="#F59E0B" size="large" /></View>;
   }
@@ -110,6 +158,35 @@ export default function OrderTrackingScreen() {
               </View>
           </View>
 
+          {/* Rating Section (Only if Delivered) */}
+          {currentStatus === 'Delivered' && !hasReviewed && (
+              <View style={styles.reviewCard}>
+                  <Text style={styles.sectionTitle}>Rate your Experience</Text>
+                  <View style={styles.starRow}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                          <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                              <Ionicons name={star <= rating ? "star" : "star-outline"} size={32} color="#F59E0B" />
+                          </TouchableOpacity>
+                      ))}
+                  </View>
+                  <TextInput 
+                      style={styles.commentInput} 
+                      placeholder="Write a comment..." 
+                      placeholderTextColor="#9CA3AF"
+                      value={comment}
+                      onChangeText={setComment}
+                      multiline
+                  />
+                  <TouchableOpacity 
+                      style={styles.submitBtn} 
+                      onPress={handleSubmitReview}
+                      disabled={isSubmittingReview}
+                  >
+                      <Text style={styles.submitBtnText}>{isSubmittingReview ? 'Submitting...' : 'Submit Review'}</Text>
+                  </TouchableOpacity>
+              </View>
+          )}
+
           {/* Order Items */}
           <View style={styles.itemsCard}>
               <Text style={styles.sectionTitle}>Order Items</Text>
@@ -137,7 +214,7 @@ export default function OrderTrackingScreen() {
 const styles = StyleSheet.create({
   loading: { flex: 1, backgroundColor: '#111827', justifyContent: 'center', alignItems: 'center' },
   container: { flex: 1, backgroundColor: '#111827' },
-  scrollContent: { padding: 20 },
+  scrollContent: { padding: 20, paddingBottom: 100 },
   header: { marginBottom: 24 },
   headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#FFF' },
   headerDate: { color: '#9CA3AF', fontSize: 14, marginTop: 4 },
@@ -162,6 +239,16 @@ const styles = StyleSheet.create({
   stepLabel: { color: '#6B7280', fontSize: 16 },
   activeStepLabel: { color: '#FFF', fontWeight: 'bold' },
   currentStatusText: { color: '#F59E0B', fontSize: 12, marginTop: 2 },
+
+  // Review Styles
+  reviewCard: { backgroundColor: '#1F2937', padding: 20, borderRadius: 16, marginBottom: 20 },
+  starRow: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginBottom: 16 },
+  commentInput: { 
+      backgroundColor: '#374151', color: '#FFF', borderRadius: 12, padding: 12, 
+      height: 80, textAlignVertical: 'top', marginBottom: 16 
+  },
+  submitBtn: { backgroundColor: '#F59E0B', padding: 12, borderRadius: 12, alignItems: 'center' },
+  submitBtnText: { color: '#000', fontWeight: 'bold', fontSize: 16 },
 
   itemsCard: { backgroundColor: '#1F2937', padding: 20, borderRadius: 16 },
   itemRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
