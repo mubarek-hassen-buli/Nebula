@@ -30,6 +30,7 @@ export interface Restaurant {
 export interface Category {
   id: string;
   name: string;
+  emoji?: string;
 }
 
 export interface MenuItem {

@@ -26,19 +26,8 @@ export const useCartStore = create<CartState>()(
       restaurantId: null,
 
       addItem: (item) => {
-        const { items, restaurantId } = get();
+        const { items } = get();
         
-        // If adding item from different restaurant, confirm clear (UI should handle confirmation, here we just reset logic or enforce)
-        // For simplicity, if restaurantId mismatches, we replace the cart or error. 
-        // Let's implement: if mismatch, we overwrite.
-        if (restaurantId && restaurantId !== item.restaurant_id) {
-           // This logic should ideally be handled in UI (Alert: "Start new basket?").
-           // For the store, we'll assume the UI allowed it and cleared first.
-           // But to be safe:
-           set({ items: [{ ...item, quantity: 1, restaurantId: item.restaurant_id }], restaurantId: item.restaurant_id });
-           return;
-        }
-
         const existingItem = items.find((i) => i.id === item.id);
         if (existingItem) {
           set({
@@ -49,7 +38,6 @@ export const useCartStore = create<CartState>()(
         } else {
           set({
             items: [...items, { ...item, quantity: 1, restaurantId: item.restaurant_id }],
-            restaurantId: item.restaurant_id,
           });
         }
       },
