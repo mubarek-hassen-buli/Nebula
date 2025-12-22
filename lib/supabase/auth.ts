@@ -92,7 +92,13 @@ export async function getUserProfile(userId: string) {
       .eq('id', userId)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      // Handle "no rows found" error gracefully
+      if (error.code === 'PGRST116') {
+        return { profile: null, error: null };
+      }
+      throw error;
+    }
     return { profile: data, error: null };
   } catch (error: any) {
     console.error('Error getting profile:', error);
