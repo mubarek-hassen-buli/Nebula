@@ -1,14 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase/client';
 import { useAuthStore } from '../../../store/authStore';
 
 export default function AdminDashboardScreen() {
   const router = useRouter();
-  const { profile } = useAuthStore();
+  const { profile, signOut } = useAuthStore();
   const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({
     restaurants: 0,
@@ -16,6 +16,24 @@ export default function AdminDashboardScreen() {
     orders: 0
   });
 
+  const handleSignOut = () => {
+    Alert.alert(
+      "Sign Out",
+      "Are you sure you want to sign out?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Sign Out", 
+          style: "destructive", 
+          onPress: async () => {
+             await signOut();
+             router.replace('/(auth)/sign-in' as any);
+          }
+        }
+      ]
+    );
+  };
+    
   const fetchStats = async () => {
     try {
       const [resCount, menuCount, orderCount] = await Promise.all([
@@ -56,18 +74,20 @@ export default function AdminDashboardScreen() {
             <Text style={styles.greeting}>Welcome back,</Text>
             <Text style={styles.username}>{profile?.full_name || 'Admin'}</Text>
           </View>
-          {profile?.avatar_url ? (
-            <Image 
-              source={{ uri: profile.avatar_url }} 
-              style={styles.profileImage} 
-            />
-          ) : (
-            <View style={[styles.profileImage, styles.avatarFallback]}>
-              <Text style={styles.avatarText}>
-                {profile?.full_name?.charAt(0).toUpperCase() || 'A'}
-              </Text>
-            </View>
-          )}
+          <TouchableOpacity onPress={handleSignOut}>
+            {profile?.avatar_url ? (
+                <Image 
+                source={{ uri: profile.avatar_url }} 
+                style={styles.profileImage} 
+                />
+            ) : (
+                <View style={[styles.profileImage, styles.avatarFallback]}>
+                <Text style={styles.avatarText}>
+                    {profile?.full_name?.charAt(0).toUpperCase() || 'A'}
+                </Text>
+                </View>
+            )}
+          </TouchableOpacity>
         </View>
 
         {/* Stats Grid */}
