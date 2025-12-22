@@ -13,6 +13,7 @@ export interface Profile {
   role: UserRole;
   reward_points: number;
   preferred_language: string;
+  avatar_url: string | null;
   created_at: string;
 }
 
@@ -28,18 +29,19 @@ export interface Restaurant {
 
 export interface Category {
   id: string;
-  restaurant_id: string;
   name: string;
 }
 
 export interface MenuItem {
   id: string;
+  restaurant_id: string;
   category_id: string;
   name: string;
   description: string | null;
   price: number;
   image_url: string | null;
   is_available: boolean;
+  created_at?: string;
 }
 
 export interface Cart {
@@ -117,8 +119,8 @@ export interface Database {
       };
       menu_items: {
         Row: MenuItem;
-        Insert: Omit<MenuItem, 'id'> & { id?: string };
-        Update: Partial<Omit<MenuItem, 'id'>>;
+        Insert: Omit<MenuItem, 'id' | 'created_at'> & { id?: string };
+        Update: Partial<Omit<MenuItem, 'id' | 'created_at'>>;
       };
       carts: {
         Row: Cart;
