@@ -4,6 +4,7 @@ create table profiles (
   role text check (role in ('customer', 'admin')) not null default 'customer',
   reward_points int default 0,
   preferred_language text default 'en',
+  avatar_url text,
   created_at timestamp with time zone default now()
 );
 
@@ -19,18 +20,31 @@ create table restaurants (
 
 create table categories (
   id uuid primary key default gen_random_uuid(),
-  restaurant_id uuid references restaurants(id) on delete cascade,
-  name text not null
+  name text not null unique
 );
+
+-- Seed Categories
+insert into categories (name)
+values
+  ('Burgers'),
+  ('Pizza'),
+  ('Pasta'),
+  ('Chicken'),
+  ('Salads'),
+  ('Sides'),
+  ('Desserts'),
+  ('Drinks');
 
 create table menu_items (
   id uuid primary key default gen_random_uuid(),
-  category_id uuid references categories(id) on delete cascade,
+  restaurant_id uuid not null references restaurants(id) on delete cascade,
+  category_id uuid references categories(id) on delete set null,
   name text not null,
   description text,
   price numeric(10,2) not null,
   image_url text,
-  is_available boolean default true
+  is_available boolean default true,
+  created_at timestamp with time zone default now()
 );
 
 create table carts (
@@ -87,4 +101,29 @@ create table reviews (
 
 
 insert into storage.buckets (id, name, public)
-values ('food-images', 'food-images', false);
+
+-- ==========================================
+-- EMERGENCY FIX SCRIPT (RUN THIS IF ISSUES PERSIST)
+-- ==========================================
+
+-- 1. Ensure Categories Exist (Global)
+insert into categories (name) values 
+  ('Burgers'), ('Pizza'), ('Pasta'), ('Chicken'), 
+  ('Salads'), ('Sides'), ('Desserts'), ('Drinks')
+on conflict (name) do nothing;
+
+-- 2. Force Public Access to Categories (RLS Fix)
+alter table categories enable row level security;
+drop policy if exists "Categories are viewable by everyone" on categories;
+create policy "Categories are viewable by everyone" on categories for select using (true);
+
+-- 3. Force Public Access to Menu Items
+alter table menu_items enable row level security;
+drop policy if exists "Menu items are viewable by everyone" on menu_items;
+create policy "Menu items are viewable by everyone" on menu_items for select using (true);
+
+-- 4. Fix Storage Bucket (Images)
+update storage.buckets set public = true where id = 'food-images';
+insert into storage.buckets (id, name, public)
+values ('food-images', 'food-images', true)
+on conflict (id) do update set public = true;
