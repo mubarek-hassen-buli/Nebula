@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../../../lib/supabase/client';
@@ -9,6 +10,7 @@ import { Category, MenuItem, Restaurant } from '../../../types/database';
 
 export default function CustomerHomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -132,7 +134,7 @@ export default function CustomerHomeScreen() {
                 <Ionicons name="search" size={20} color="#9CA3AF" />
                 <TextInput 
                     style={styles.searchInput}
-                    placeholder="Are you hungry !!"
+                    placeholder={t('home.searchPlaceholder')}
                     placeholderTextColor="#6B7280"
                     value={search}
                     onChangeText={setSearch}
@@ -143,7 +145,7 @@ export default function CustomerHomeScreen() {
         {/* Categories */}
         <View style={styles.section}>
             <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>What's on Your Mind?</Text>
+                <Text style={styles.sectionTitle}>{t('home.categoriesTitle')}</Text>
                 <TouchableOpacity>
                    <Ionicons name="arrow-forward-circle-outline" size={24} color="#F59E0B" />
                 </TouchableOpacity>
@@ -160,8 +162,8 @@ export default function CustomerHomeScreen() {
 
         {/* Today's Trends */}
         <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Today's Trends</Text>
-            <Text style={styles.sectionSubtitle}>Here's what you might like to taste</Text>
+            <Text style={styles.sectionTitle}>{t('home.trendsTitle')}</Text>
+            <Text style={styles.sectionSubtitle}>{t('home.trendsSubtitle')}</Text>
             <FlatList
                 data={filteredTrendingItems}
                 horizontal
@@ -174,7 +176,7 @@ export default function CustomerHomeScreen() {
 
         {/* Best Reviewed (Restaurants) */}
         <View style={styles.section}>
-             <Text style={styles.sectionTitle}>Best Favorites</Text>
+             <Text style={styles.sectionTitle}>{t('home.favoritesTitle')}</Text>
              <View style={styles.resList}>
                  {filteredRestaurants?.map(renderRestaurantCard)}
              </View>

@@ -1,0 +1,80 @@
+{
+  "common": {
+    "search": "Barbaadi",
+    "cancel": "Dhiisi",
+    "save": "Olkaa'i",
+    "delete": "Haqi",
+    "edit": "Sirreessi",
+    "back": "Duubatti deebi'i",
+    "next": "Itti aanuu",
+    "loading": "Fe'aa jira...",
+    "error": "Dogoggora",
+    "success": "Milkaa'ina"
+  },
+  "home": {
+    "searchPlaceholder": "Ni beelaatee !!",
+    "categoriesTitle": "Maal barbaadda?",
+    "trendsTitle": "Har'a Jaallatamoo",
+    "trendsSubtitle": "Kan ati jaallachuu dandeessu",
+    "favoritesTitle": "Filatamoo Gaarii"
+  },
+  "restaurant": {
+    "menu": "Menyuu",
+    "addToCart": "Gara gaarii itti dabaluu",
+    "viewBasket": "Gaarii ilaali",
+    "deliveryTime": "Daqiiqaa 20-30",
+    "freeDelivery": "Geejjiba Bilisaa"
+  },
+  "dish": {
+    "orderNow": "Amma ajaji",
+    "description": "Ibsa",
+    "totalAmount": "Ida'ama Waliigalaa"
+  },
+  "cart": {
+    "title": "Gaarii",
+    "emptyCart": "Gaarii kee duwwaa dha",
+    "subtotal": "Xiqqaa Ida'ama",
+    "deliveryFee": "Kaffaltii Geejjibaa",
+    "total": "Waliigala",
+    "placeOrder": "Ajaja Kaa'i",
+    "itemsInCart": "meeshaalee gaarii keessa"
+  },
+  "orders": {
+    "title": "Ajajoota Koo",
+    "orderNumber": "Ajaja",
+    "status": "Haala",
+    "trackOrder": "Ajaja Hordofi",
+    "pending": "Eegaa jira",
+    "preparing": "Qopheessaa jira",
+    "outForDelivery": "Geejjibaa jira",
+    "delivered": "Geeffameera",
+    "cancelled": "Haqameera"
+  },
+  "profile": {
+    "title": "Piroofaayilii",
+    "general": "Waliigala",
+    "profile": "Piroofaayilii",
+    "myAddress": "Teessoo Koo",
+    "language": "Afaan",
+    "darkMode": "Haalata Dukkanaa",
+    "promotional": "Sochii Beeksisaa",
+    "coupon": "Kuuppoonii",
+    "earnings": "Galii",
+    "joinDelivery": "Akka Nama Geejjibaatti Makadhu",
+    "openRestaurant": "Mana Nyaataa Bani",
+    "logout": "Ba'i",
+    "rewardPoints": "Qabxiilee Badhaasa",
+    "editProfile": "Piroofaayilii Sirreessi",
+    "fullName": "Maqaa Guutuu",
+    "email": "Imeelii",
+    "saveChanges": "Jijjiirama Olkaa'i"
+  },
+  "auth": {
+    "signIn": "Seeni",
+    "signUp": "Galmaa'i",
+    "signOut": "Ba'i",
+    "email": "Imeelii",
+    "password": "Jecha Icciitii",
+    "confirmPassword": "Jecha Icciitii Mirkaneessi"
+  }
+}

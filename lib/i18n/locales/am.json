@@ -1,0 +1,80 @@
+{
+  "common": {
+    "search": "ፈልግ",
+    "cancel": "ሰርዝ",
+    "save": "አስቀምጥ",
+    "delete": "ሰርዝ",
+    "edit": "አርትዕ",
+    "back": "ተመለስ",
+    "next": "ቀጣይ",
+    "loading": "በመጫን ላይ...",
+    "error": "ስህተት",
+    "success": "ተሳክቷል"
+  },
+  "home": {
+    "searchPlaceholder": "ተራብከሃል !!",
+    "categoriesTitle": "ምን ይፈልጋሉ?",
+    "trendsTitle": "የዛሬ ተወዳጆች",
+    "trendsSubtitle": "ሊወዱት የሚችሉት ምግቦች",
+    "favoritesTitle": "ምርጥ ተወዳጆች"
+  },
+  "restaurant": {
+    "menu": "ምናሌ",
+    "addToCart": "ወደ ጋሪ ጨምር",
+    "viewBasket": "ጋሪ ይመልከቱ",
+    "deliveryTime": "20-30 ደቂቃ",
+    "freeDelivery": "ነጻ ማድረስ"
+  },
+  "dish": {
+    "orderNow": "አሁን ይዘዙ",
+    "description": "መግለጫ",
+    "totalAmount": "ጠቅላላ መጠን"
+  },
+  "cart": {
+    "title": "ጋሪ",
+    "emptyCart": "ጋሪዎ ባዶ ነው",
+    "subtotal": "ንዑስ ድምር",
+    "deliveryFee": "የማድረስ ክፍያ",
+    "total": "ጠቅላላ",
+    "placeOrder": "ይዘዙ",
+    "itemsInCart": "እቃዎች በጋሪ ውስጥ"
+  },
+  "orders": {
+    "title": "ትዕዛዞቼ",
+    "orderNumber": "ትዕዛዝ",
+    "status": "ሁኔታ",
+    "trackOrder": "ትዕዛዝ ይከታተሉ",
+    "pending": "በመጠባበቅ ላይ",
+    "preparing": "በዝግጅት ላይ",
+    "outForDelivery": "በማድረስ ላይ",
+    "delivered": "ደርሷል",
+    "cancelled": "ተሰርዟል"
+  },
+  "profile": {
+    "title": "መገለጫ",
+    "general": "አጠቃላይ",
+    "profile": "መገለጫ",
+    "myAddress": "አድራሻዬ",
+    "language": "ቋንቋ",
+    "darkMode": "ጨለማ ሁነታ",
+    "promotional": "የማስተዋወቂያ እንቅስቃሴ",
+    "coupon": "ኩፖን",
+    "earnings": "ገቢ",
+    "joinDelivery": "እንደ ማድረሻ ሰው ይቀላቀሉ",
+    "openRestaurant": "ሬስቶራንት ክፈት",
+    "logout": "ውጣ",
+    "rewardPoints": "የሽልማት ነጥቦች",
+    "editProfile": "መገለጫ አርትዕ",
+    "fullName": "ሙሉ ስም",
+    "email": "ኢሜይል",
+    "saveChanges": "ለውጦችን አስቀምጥ"
+  },
+  "auth": {
+    "signIn": "ግባ",
+    "signUp": "ተመዝገብ",
+    "signOut": "ውጣ",
+    "email": "ኢሜይል",
+    "password": "የይለፍ ቃል",
+    "confirmPassword": "የይለፍ ቃል አረጋግጥ"
+  }
+}
