@@ -21,15 +21,16 @@ export default function CustomerTabsLayout() {
           ),
         }}
       />
+      
       <Tabs.Screen
-        name="explore"
+        name="orders"
         options={{
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'bag' : 'bag-outline'} size={24} color={color} />
           ),
         }}
       />
-      
+
       {/* Center Cart Button - Floating Effect */}
       <Tabs.Screen
         name="cart"
@@ -43,13 +44,16 @@ export default function CustomerTabsLayout() {
       />
 
       <Tabs.Screen
-        name="orders"
+        name="spacer"
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'bag' : 'bag-outline'} size={24} color={color} />
-          ),
+          tabBarItemStyle: { display: 'none' },
+          tabBarButton: () => <View style={{ width: 0 }} />, 
+        }}
+        listeners={{
+             tabPress: (e) => e.preventDefault(),
         }}
       />
+
       <Tabs.Screen
         name="profile"
         options={{
