@@ -10,6 +10,7 @@ import { Category, MenuItem, Restaurant } from '../../../types/database';
 export default function CustomerHomeScreen() {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // 1. Fetch Categories
   const { data: categories } = useQuery({
@@ -27,11 +28,11 @@ export default function CustomerHomeScreen() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('menu_items')
-        .select('*, restaurants(name)')
+        .select('*, restaurants(name), categories(name)')
         .eq('is_available', true)
-        .limit(5);
+        .limit(20);
       if (error) throw error;
-      return data as (MenuItem & { restaurants: { name: string } })[];
+      return data as (MenuItem & { restaurants: { name: string }, categories: { name: string } })[];
     },
   });
 
@@ -48,14 +49,33 @@ export default function CustomerHomeScreen() {
     }
   });
 
-  const renderCategory = ({ item }: { item: Category }) => (
-    <TouchableOpacity style={styles.catItem}>
-      <View style={styles.catIconContainer}>
-         <Text style={styles.catIconText}>{item.emoji || item.name.charAt(0)}</Text>
-      </View>
-      <Text style={styles.catName}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+  // Filter trending items by category and search
+  const filteredTrendingItems = trendingItems?.filter(item => {
+    const matchesCategory = !selectedCategory || item.categories?.name === selectedCategory;
+    const matchesSearch = !search || item.name.toLowerCase().includes(search.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  // Filter restaurants by search
+  const filteredRestaurants = restaurants?.filter(restaurant => {
+    return !search || restaurant.name.toLowerCase().includes(search.toLowerCase()) || 
+           restaurant.description?.toLowerCase().includes(search.toLowerCase());
+  });
+
+  const renderCategory = ({ item }: { item: Category }) => {
+    const isSelected = selectedCategory === item.name;
+    return (
+      <TouchableOpacity 
+        style={styles.catItem}
+        onPress={() => setSelectedCategory(isSelected ? null : item.name)}
+      >
+        <View style={[styles.catIconContainer, isSelected && styles.catIconContainerSelected]}>
+          <Text style={styles.catIconText}>{item.emoji || item.name.charAt(0)}</Text>
+        </View>
+        <Text style={[styles.catName, isSelected && styles.catNameSelected]}>{item.name}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderTrendCard = ({ item }: { item: MenuItem & { restaurants: { name: string } } }) => (
     <TouchableOpacity 
@@ -143,7 +163,7 @@ export default function CustomerHomeScreen() {
             <Text style={styles.sectionTitle}>Today's Trends</Text>
             <Text style={styles.sectionSubtitle}>Here's what you might like to taste</Text>
             <FlatList
-                data={trendingItems}
+                data={filteredTrendingItems}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={renderTrendCard}
@@ -156,7 +176,7 @@ export default function CustomerHomeScreen() {
         <View style={styles.section}>
              <Text style={styles.sectionTitle}>Best Favorites</Text>
              <View style={styles.resList}>
-                 {restaurants?.map(renderRestaurantCard)}
+                 {filteredRestaurants?.map(renderRestaurantCard)}
              </View>
         </View>
 
@@ -234,6 +254,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#374151',
   },
+  catIconContainerSelected: {
+    backgroundColor: '#F59E0B',
+    borderColor: '#F59E0B',
+  },
   catIconText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -243,6 +267,10 @@ const styles = StyleSheet.create({
     color: '#D1D5DB',
     fontSize: 12,
     textAlign: 'center',
+  },
+  catNameSelected: {
+    color: '#F59E0B',
+    fontWeight: 'bold',
   },
   // Trends
   trendList: {
