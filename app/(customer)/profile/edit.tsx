@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { upsertProfile } from '../../../lib/supabase/auth';
@@ -8,6 +9,7 @@ import { useAuthStore } from '../../../store/authStore';
 
 export default function EditProfileScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { profile, user, refreshProfile } = useAuthStore();
   
   const [fullName, setFullName] = useState(profile?.full_name || '');
@@ -17,7 +19,7 @@ export default function EditProfileScreen() {
     if (!user) return;
     
     if (!fullName.trim()) {
-      Alert.alert('Error', 'Please enter your name');
+      Alert.alert(t('common.error'), t('profile.fullName'));
       return;
     }
 
@@ -25,10 +27,10 @@ export default function EditProfileScreen() {
     try {
       await upsertProfile(user.id, { full_name: fullName.trim() });
       await refreshProfile();
-      Alert.alert('Success', 'Profile updated successfully!');
+      Alert.alert(t('common.success'), t('profile.saveChanges') + '!');
       router.back();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to update profile');
+      Alert.alert(t('common.error'), error.message || t('common.error'));
     } finally {
       setIsLoading(false);
     }
@@ -45,7 +47,7 @@ export default function EditProfileScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#FFF" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Edit Profile</Text>
+          <Text style={styles.headerTitle}>{t('profile.editProfile')}</Text>
           <View style={{ width: 40 }} />
         </View>
 
@@ -67,21 +69,21 @@ export default function EditProfileScreen() {
                 </View>
               )}
             </View>
-            <Text style={styles.avatarHint}>Profile Picture</Text>
+            <Text style={styles.avatarHint}>{t('profile.profile')}</Text>
           </View>
 
           {/* Form Fields */}
           <View style={styles.formSection}>
-            <Text style={styles.label}>Full Name</Text>
+            <Text style={styles.label}>{t('profile.fullName')}</Text>
             <TextInput
               style={styles.input}
               value={fullName}
               onChangeText={setFullName}
-              placeholder="Enter your full name"
+              placeholder={t('profile.fullName')}
               placeholderTextColor="#6B7280"
             />
 
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>{t('profile.email')}</Text>
             <TextInput
               style={[styles.input, styles.disabledInput]}
               value={user?.email || ''}
@@ -92,7 +94,7 @@ export default function EditProfileScreen() {
             <View style={styles.infoCard}>
               <Ionicons name="star" size={20} color="#F59E0B" />
               <View style={{ flex: 1 }}>
-                <Text style={styles.infoTitle}>Reward Points</Text>
+                <Text style={styles.infoTitle}>{t('profile.rewardPoints')}</Text>
                 <Text style={styles.infoValue}>{profile?.reward_points || 0} points</Text>
               </View>
             </View>
@@ -107,7 +109,7 @@ export default function EditProfileScreen() {
             {isLoading ? (
               <ActivityIndicator color="#000" />
             ) : (
-              <Text style={styles.saveButtonText}>Save Changes</Text>
+              <Text style={styles.saveButtonText}>{t('profile.saveChanges')}</Text>
             )}
           </TouchableOpacity>
         </ScrollView>

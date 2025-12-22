@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthGuard } from '../components/auth/AuthGuard';
+import '../lib/i18n'; // Initialize i18n
 import { useAuthStore } from '../store/authStore';
 
 // Create a client for React Query

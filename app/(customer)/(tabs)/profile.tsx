@@ -1,18 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Image, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import LanguageSelector from '../../../components/LanguageSelector';
 import { useAuthStore } from '../../../store/authStore';
 
 export default function CustomerProfileScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { profile, signOut, user } = useAuthStore();
 
   const handleSignOut = () => {
-    Alert.alert('Sign Out', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('auth.signOut'), t('common.cancel') + '?', [
+      { text: t('common.cancel'), style: 'cancel' },
       { 
-          text: 'Sign Out', 
+          text: t('auth.signOut'), 
           style: 'destructive', 
           onPress: async () => {
               await signOut();
@@ -69,31 +72,31 @@ export default function CustomerProfileScreen() {
       </View>
 
       <ScrollView style={styles.content}>
-          <Text style={styles.sectionTitle}>General</Text>
+          <Text style={styles.sectionTitle}>{t('profile.general')}</Text>
           <View style={styles.sectionCard}>
-              {renderOption("person-outline", "Profile", () => router.push('/(customer)/profile/edit' as any))}
+              {renderOption("person-outline", t('profile.profile'), () => router.push('/(customer)/profile/edit' as any))}
               <View style={styles.divider} />
-              {renderOption("map-outline", "My Address")}
+              {renderOption("map-outline", t('profile.myAddress'))}
               <View style={styles.divider} />
-              {renderOption("language-outline", "Language")}
+              <LanguageSelector />
               <View style={styles.divider} />
-              {renderOption("moon-outline", "Dark Mode", undefined, false, <Switch value={true} trackColor={{false: '#767577', true: '#F59E0B'}} thumbColor={'#f4f3f4'} />)}
+              {renderOption("moon-outline", t('profile.darkMode'), undefined, false, <Switch value={true} trackColor={{false: '#767577', true: '#F59E0B'}} thumbColor={'#f4f3f4'} />)}
           </View>
 
-          <Text style={styles.sectionTitle}>Promotional Activity</Text>
+          <Text style={styles.sectionTitle}>{t('profile.promotional')}</Text>
           <View style={styles.sectionCard}>
-              {renderOption("ticket-outline", "Coupon")}
+              {renderOption("ticket-outline", t('profile.coupon'))}
           </View>
 
-          <Text style={styles.sectionTitle}>Earnings</Text>
+          <Text style={styles.sectionTitle}>{t('profile.earnings')}</Text>
           <View style={styles.sectionCard}>
-              {renderOption("people-outline", "Join as a Delivery Man")}
+              {renderOption("people-outline", t('profile.joinDelivery'))}
               <View style={styles.divider} />
-              {renderOption("storefront-outline", "Open Restaurant", undefined, true, <Ionicons name="chevron-forward" size={20} color="#6B7280" />)}
+              {renderOption("storefront-outline", t('profile.openRestaurant'), undefined, true, <Ionicons name="chevron-forward" size={20} color="#6B7280" />)}
           </View>
           
           <TouchableOpacity style={styles.logoutBtn} onPress={handleSignOut}>
-              <Text style={styles.logoutText}>Log Out</Text>
+              <Text style={styles.logoutText}>{t('profile.logout')}</Text>
               <Ionicons name="log-out-outline" size={20} color="#EF4444" />
           </TouchableOpacity>
           

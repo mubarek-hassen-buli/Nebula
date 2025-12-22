@@ -1,0 +1,80 @@
+{
+  "common": {
+    "search": "Search",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "home": {
+    "searchPlaceholder": "Are you hungry !!",
+    "categoriesTitle": "What's on Your Mind?",
+    "trendsTitle": "Today's Trends",
+    "trendsSubtitle": "Here's what you might like to taste",
+    "favoritesTitle": "Best Favorites"
+  },
+  "restaurant": {
+    "menu": "Menu",
+    "addToCart": "Add to Cart",
+    "viewBasket": "View Basket",
+    "deliveryTime": "20-30 min",
+    "freeDelivery": "Free Delivery"
+  },
+  "dish": {
+    "orderNow": "Order Now",
+    "description": "Description",
+    "totalAmount": "Total Amount"
+  },
+  "cart": {
+    "title": "Cart",
+    "emptyCart": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "deliveryFee": "Delivery Fee",
+    "total": "Total",
+    "placeOrder": "Place Order",
+    "itemsInCart": "items in cart"
+  },
+  "orders": {
+    "title": "My Orders",
+    "orderNumber": "Order",
+    "status": "Status",
+    "trackOrder": "Track Order",
+    "pending": "Pending",
+    "preparing": "Preparing",
+    "outForDelivery": "Out for Delivery",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "profile": {
+    "title": "Profile",
+    "general": "General",
+    "profile": "Profile",
+    "myAddress": "My Address",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "promotional": "Promotional Activity",
+    "coupon": "Coupon",
+    "earnings": "Earnings",
+    "joinDelivery": "Join as a Delivery Man",
+    "openRestaurant": "Open Restaurant",
+    "logout": "Log Out",
+    "rewardPoints": "Reward Points",
+    "editProfile": "Edit Profile",
+    "fullName": "Full Name",
+    "email": "Email",
+    "saveChanges": "Save Changes"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password"
+  }
+}
