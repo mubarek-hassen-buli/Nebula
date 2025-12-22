@@ -51,29 +51,25 @@ export default function MenuScreen() {
     );
   };
 
-  if (!restaurantId && !restaurants?.length) {
-      return (
-          <SafeAreaView style={styles.safeArea}>
-              <View style={styles.container}>
-                  <Text style={{color: 'white', textAlign: 'center', marginTop: 20}}>Please select a restaurant first.</Text>
-                  <TouchableOpacity onPress={() => router.back()} style={{marginTop: 20}}>
-                     <Text style={{color: '#16A34A', textAlign: 'center'}}>Go Back</Text>
-                  </TouchableOpacity>
-              </View>
-          </SafeAreaView>
-      )
-  }
+  // Determine Title
+  const headerTitle = restaurantId 
+    ? (restaurants?.find(r => r.id === restaurantId)?.name || 'Restaurant Menu')
+    : 'All Menu Items';
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
+          {restaurantId ? (
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          ) : (
+            <View style={{width: 24}} /> // Spacer
+          )}
           <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>{restaurantName}</Text>
+            <Text style={styles.headerTitle}>{headerTitle}</Text>
           </View>
           <View style={{ width: 24 }} />
         </View>
@@ -123,7 +119,7 @@ export default function MenuScreen() {
                     <Text style={styles.name}>{item.name}</Text>
                     <View style={styles.actionIcons}>
                       <TouchableOpacity 
-                          onPress={() => router.push({ pathname: '/(admin)/menu-item/create', params: { id: item.id, restaurantId } } as any)}
+                          onPress={() => router.push({ pathname: '/(admin)/menu-item/create', params: { id: item.id, restaurantId: item.restaurant_id } } as any)}
                           style={styles.iconButton}
                       >
                         <Ionicons name="pencil" size={18} color="#9CA3AF" />
@@ -136,6 +132,15 @@ export default function MenuScreen() {
                       </TouchableOpacity>
                     </View>
                   </View>
+                  
+                  {/* Restaurant Name Label */}
+                  <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 4}}>
+                    <Ionicons name="storefront" size={12} color="#9CA3AF" style={{marginRight: 4}} />
+                    <Text style={{color: '#9CA3AF', fontSize: 12, fontWeight: '500'}}>
+                      {(item as any).restaurants?.name || 'Unknown Restaurant'}
+                    </Text>
+                  </View>
+
                   <Text style={styles.categoryLabel}>{item.categories?.name || 'Uncategorized'}</Text>
                   <Text style={styles.description} numberOfLines={2}>{item.description}</Text>
                   <View style={styles.priceRow}>

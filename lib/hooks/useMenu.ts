@@ -27,21 +27,24 @@ export function useMenu(restaurantId?: string) {
   const { data: menuItems, isLoading: isLoadingItems } = useQuery({
     queryKey: ['menu-items', restaurantId],
     queryFn: async () => {
-      if (!restaurantId) return [];
-
-      const { data: items, error: itemsError } = await supabase
+      let query = supabase
         .from('menu_items')
         .select(`
           *,
-          categories:category_id (*)
-        `)
-        .eq('restaurant_id', restaurantId);
+          categories:category_id (*),
+          restaurants:restaurant_id (name)
+        `);
+
+      if (restaurantId) {
+        query = query.eq('restaurant_id', restaurantId);
+      }
+
+      const { data: items, error: itemsError } = await query;
 
       if (itemsError) throw itemsError;
-      // Explicit cast to ensure TS knows the structure including joined category
-      return items as (MenuItem & { categories: Category | null })[];
+      // Explicit cast to ensure TS knows the structure including joined category and restaurant
+      return items as (MenuItem & { categories: Category | null, restaurants: { name: string } | null })[];
     },
-    enabled: !!restaurantId,
   });
 
   // Create Item Mutation
