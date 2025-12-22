@@ -16,6 +16,12 @@ export default function AdminDashboardScreen() {
     orders: 0
   });
 
+  // Temporary: fast switching for dev
+  const handleSwitchToCustomer = () => {
+      router.push('/(customer)/(tabs)' as any);
+  };
+
+
   const handleSignOut = () => {
     Alert.alert(
       "Sign Out",
@@ -89,6 +95,14 @@ export default function AdminDashboardScreen() {
             )}
           </TouchableOpacity>
         </View>
+        
+        {/* Dev Tool: Switch to Customer */}
+        <TouchableOpacity 
+            onPress={handleSwitchToCustomer} 
+            style={{backgroundColor: '#F59E0B', padding: 8, borderRadius: 8, marginBottom: 20, alignItems: 'center'}}
+        >
+            <Text style={{color: '#000', fontWeight: 'bold'}}>Switch to Customer View (Dev)</Text>
+        </TouchableOpacity>
 
         {/* Stats Grid */}
         <View style={styles.statsGrid}>
