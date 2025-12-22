@@ -1,6 +1,6 @@
 import { Session, User } from '@supabase/supabase-js';
 import { create } from 'zustand';
-import { getUserProfile } from '../lib/supabase/auth';
+import { getUserProfile, upsertProfile } from '../lib/supabase/auth';
 import { supabase } from '../lib/supabase/client';
 import { Profile } from '../types/database';
 
@@ -56,7 +56,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({ session, user: session.user });
 
         // Fetch user profile
-        const { profile } = await getUserProfile(session.user.id);
+        let { profile } = await getUserProfile(session.user.id);
+        
+        // If profile doesn't exist, create it (default role: customer)
+        if (!profile) {
+          console.log('Profile not found, creating new profile...');
+          const result = await upsertProfile(session.user.id, {
+            role: 'customer',
+            full_name: '',
+          });
+          profile = result.profile;
+        }
+
         set({ profile });
       }
 
