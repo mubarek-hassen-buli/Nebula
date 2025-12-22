@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../../../lib/supabase/client';
 import { useCartStore } from '../../../store/cartStore';
 import { MenuItem } from '../../../types/database';
@@ -33,7 +33,7 @@ export default function DishDetailsScreen() {
 
     // Add item quantity times
     for(let i=0; i<quantity; i++) addItem(item);
-    router.back();
+    Alert.alert('Success', `${quantity} item(s) added to cart successfully!`);
   };
 
   const increment = () => setQuantity(q => q + 1);
