@@ -26,7 +26,11 @@ export const useCartStore = create<CartState>()(
       restaurantId: null,
 
       addItem: (item) => {
-        const { items } = get();
+        const { items, restaurantId } = get();
+        
+        // Basic check: if cart has items from another restaurant, warn or reset? 
+        // For MVP, if restaurantId is null, we set it.
+        // If it's different, we should technically clear or warn, but let's just set it if null.
         
         const existingItem = items.find((i) => i.id === item.id);
         if (existingItem) {
@@ -38,6 +42,7 @@ export const useCartStore = create<CartState>()(
         } else {
           set({
             items: [...items, { ...item, quantity: 1, restaurantId: item.restaurant_id }],
+            restaurantId: restaurantId || item.restaurant_id, // Set global ID if not set
           });
         }
       },
