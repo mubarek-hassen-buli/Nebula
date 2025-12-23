@@ -1,8 +1,10 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import 'react-native-reanimated';
 
@@ -24,17 +26,27 @@ const queryClient = new QueryClient({
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const { isLoading, isInitialized, initialize } = useAuthStore();
+  
+  const [fontsLoaded] = useFonts({
+    'Billabong': require('../assets/fonts/Billabong.otf'),
+  });
 
   // Initialize auth state on mount
   useEffect(() => {
     initialize();
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (isInitialized && fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [isInitialized, fontsLoaded]);
+
   // Show loading screen while initializing
-  if (!isInitialized || isLoading) {
+  if (!isInitialized || isLoading || !fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#3B82F6" />
+        <ActivityIndicator size="large" color="#F59E0B" />
       </View>
     );
   }
@@ -43,8 +55,10 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <AuthGuard>
-          <Slot />
-          <StatusBar style="auto" />
+          <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+            <Slot />
+            <StatusBar style="auto" />
+          </View>
         </AuthGuard>
       </ThemeProvider>
     </QueryClientProvider>
