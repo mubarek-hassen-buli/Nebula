@@ -1,14 +1,17 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { OTPInput } from '../../components/auth/OTPInput';
 import { useAuth } from '../../lib/hooks/useAuth';
 
@@ -64,143 +67,201 @@ export default function VerifyOTPScreen() {
     }
   };
 
-  const handleBack = () => {
-    router.back();
-  };
-
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.content}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Text style={styles.backButtonText}>← Back</Text>
-          </TouchableOpacity>
-          
-          <Text style={styles.title}>Verify OTP</Text>
-          <Text style={styles.subtitle}>
-            We sent a 6-digit code to{'\n'}
-            <Text style={styles.email}>{params.email}</Text>
-          </Text>
-        </View>
-
-        {/* OTP Input */}
-        <View style={styles.form}>
-          <OTPInput
-            value={otp}
-            onChange={setOtp}
-            length={6}
-            autoFocus
-          />
-
-          {isSubmitting && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color="#3B82F6" />
-              <Text style={styles.loadingText}>Verifying...</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Resend OTP */}
-        <View style={styles.resendContainer}>
-          {canResend ? (
-            <TouchableOpacity onPress={handleResendOTP} disabled={isSubmitting}>
-              <Text style={styles.resendText}>Resend OTP</Text>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
-          ) : (
-            <Text style={styles.countdownText}>
-              Resend OTP in {countdown}s
-            </Text>
-          )}
-        </View>
+            
+            <View style={styles.iconContainer}>
+              <Ionicons name="shield-checkmark" size={48} color="#F59E0B" />
+            </View>
 
-        {/* Info */}
-        <View style={styles.infoContainer}>
-          <Text style={styles.infoText}>
-            💡 Tip: The code will auto-verify when you enter all 6 digits
-          </Text>
-        </View>
-      </View>
-    </KeyboardAvoidingView>
+            <Text style={styles.title}>Verify It's You</Text>
+            <Text style={styles.subtitle}>
+              We've sent a 6-digit code to
+            </Text>
+            <Text style={styles.emailText}>{params.email}</Text>
+          </View>
+
+          {/* OTP Card */}
+          <View style={styles.card}>
+            <View style={styles.otpContainer}>
+              <OTPInput
+                value={otp}
+                onChange={setOtp}
+                length={6}
+                autoFocus
+              />
+            </View>
+
+            {isSubmitting ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color="#F59E0B" />
+                <Text style={styles.loadingText}>Verifying code...</Text>
+              </View>
+            ) : (
+              <View style={styles.divider} />
+            )}
+
+            {/* Resend Section */}
+            <View style={styles.resendContainer}>
+              <Text style={styles.resendLabel}>Didn't receive the code?</Text>
+              {canResend ? (
+                <TouchableOpacity onPress={handleResendOTP} disabled={isSubmitting}>
+                  <Text style={styles.resendLink}>Resend Code</Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={styles.countdownText}>
+                  Resend in <Text style={styles.countdownValue}>{countdown}s</Text>
+                </Text>
+              )}
+            </View>
+          </View>
+
+          {/* Info Card */}
+          <View style={styles.infoCard}>
+            <Ionicons name="information-circle" size={24} color="#60A5FA" />
+            <Text style={styles.infoText}>
+              Tip: The code will be automatically verified once you enter all 6 digits.
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#111827',
   },
-  content: {
+  keyboardView: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
   },
   header: {
-    marginBottom: 48,
+    alignItems: 'center',
+    marginBottom: 40,
   },
   backButton: {
-    marginBottom: 24,
+    alignSelf: 'flex-start',
+    marginBottom: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1F2937',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  backButtonText: {
-    fontSize: 16,
-    color: '#3B82F6',
-    fontWeight: '600',
+  iconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#1F2937',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: '#F59E0B',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 12,
+    color: '#FFF',
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
-    lineHeight: 24,
+    color: '#9CA3AF',
+    textAlign: 'center',
   },
-  email: {
+  emailText: {
+    fontSize: 16,
+    color: '#F59E0B',
     fontWeight: '600',
-    color: '#3B82F6',
+    marginTop: 4,
   },
-  form: {
-    marginBottom: 32,
+  card: {
+    backgroundColor: '#1F2937',
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  otpContainer: {
+    marginBottom: 24,
   },
   loadingContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 24,
-    gap: 8,
+    gap: 12,
+    paddingVertical: 12,
   },
   loadingText: {
-    fontSize: 14,
-    color: '#6B7280',
+    color: '#D1D5DB',
+    fontSize: 16,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#374151',
+    marginBottom: 24,
   },
   resendContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    gap: 8,
   },
-  resendText: {
+  resendLabel: {
+    color: '#9CA3AF',
+    fontSize: 14,
+  },
+  resendLink: {
+    color: '#F59E0B',
     fontSize: 16,
-    color: '#3B82F6',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   countdownText: {
-    fontSize: 14,
     color: '#9CA3AF',
+    fontSize: 14,
   },
-  infoContainer: {
-    backgroundColor: '#EFF6FF',
+  countdownValue: {
+    color: '#F59E0B',
+    fontWeight: 'bold',
+  },
+  infoCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E3A8A20',
+    borderRadius: 16,
     padding: 16,
-    borderRadius: 12,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: '#1E3A8A50',
     marginTop: 'auto',
   },
   infoText: {
-    fontSize: 14,
-    color: '#1E40AF',
-    textAlign: 'center',
+    flex: 1,
+    color: '#93C5FD',
+    fontSize: 13,
     lineHeight: 20,
   },
 });
