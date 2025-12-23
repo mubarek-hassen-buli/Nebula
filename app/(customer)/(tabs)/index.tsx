@@ -9,6 +9,7 @@ import { supabase } from '../../../lib/supabase/client';
 import { useCartStore } from '../../../store/cartStore';
 import { Category, MenuItem, Restaurant } from '../../../types/database';
 
+import DishCard from '../../../components/DishCard';
 import DishDetailModal from '../../../components/DishDetailModal';
 
 export default function CustomerHomeScreen() {
@@ -109,38 +110,17 @@ export default function CustomerHomeScreen() {
   };
 
   const renderTrendCard = ({ item }: { item: MenuItem & { restaurants: { name: string } } }) => (
-    <TouchableOpacity 
-        style={styles.trendCard}
+    <DishCard 
+        item={item} 
         onPress={() => {
             setSelectedDish(item);
             setDetailModalVisible(true);
         }}
-    >
-      <View style={styles.trendImageContainer}>
-        <Image source={{ uri: item.image_url || 'https://via.placeholder.com/400' }} style={styles.trendImage} />
-        <View style={styles.discountBadge}>
-           <Text style={styles.discountText}>20% OFF</Text>
-        </View>
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={(e) => {
-            e.stopPropagation();
+        onAdd={() => {
             addItem(item);
             Alert.alert('Success', 'Added to cart successfully!');
-          }}
-        >
-            <Ionicons name="add" size={20} color="#000" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.trendInfo}>
-        <Text style={styles.trendRestaurant}>{item.restaurants?.name}</Text>
-        <Text style={styles.trendName} numberOfLines={1}>{item.name}</Text>
-        <View style={styles.trendPriceRow}>
-            <Text style={styles.trendPrice}>${item.price}</Text>
-            <Text style={styles.trendOldPrice}>${(item.price * 1.2).toFixed(2)}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+        }}
+    />
   );
 
   const renderRestaurantCard = (restaurant: Restaurant & { rating: number }) => (
@@ -295,10 +275,19 @@ export default function CustomerHomeScreen() {
             />
         </View>
 
+
+
         {/* Today's Trends */}
         <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('home.trendsTitle')}</Text>
-            <Text style={styles.sectionSubtitle}>{t('home.trendsSubtitle')}</Text>
+            <View style={styles.sectionHeader}>
+                <View>
+                    <Text style={styles.sectionTitle}>{t('home.trendsTitle')}</Text>
+                    <Text style={styles.sectionSubtitle}>{t('home.trendsSubtitle')}</Text>
+                </View>
+                <TouchableOpacity onPress={() => router.push('/(customer)/dishes' as any)}>
+                    <Text style={{color: '#F59E0B', fontWeight: 'bold'}}>See All</Text>
+                </TouchableOpacity>
+            </View>
             <FlatList
                 data={filteredTrendingItems}
                 horizontal
