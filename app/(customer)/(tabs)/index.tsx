@@ -9,6 +9,8 @@ import { supabase } from '../../../lib/supabase/client';
 import { useCartStore } from '../../../store/cartStore';
 import { Category, MenuItem, Restaurant } from '../../../types/database';
 
+import DishDetailModal from '../../../components/DishDetailModal';
+
 export default function CustomerHomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
@@ -21,6 +23,10 @@ export default function CustomerHomeScreen() {
   const [sortBy, setSortBy] = useState<'price_asc' | 'price_desc' | null>(null);
   const [minRating, setMinRating] = useState<number | null>(null);
   const [selectedRestaurants, setSelectedRestaurants] = useState<string[]>([]);
+
+  // Dish Detail Modal State
+  const [detailModalVisible, setDetailModalVisible] = useState(false);
+  const [selectedDish, setSelectedDish] = useState<(MenuItem & { restaurants?: { name: string } }) | null>(null);
 
   // 1. Fetch Categories
   const { data: categories } = useQuery({
@@ -87,6 +93,7 @@ export default function CustomerHomeScreen() {
   });
 
   const renderCategory = ({ item }: { item: Category }) => {
+    // ... (renderCategory logic remains same)
     const isSelected = selectedCategory === item.name;
     return (
       <TouchableOpacity 
@@ -104,7 +111,10 @@ export default function CustomerHomeScreen() {
   const renderTrendCard = ({ item }: { item: MenuItem & { restaurants: { name: string } } }) => (
     <TouchableOpacity 
         style={styles.trendCard}
-        onPress={() => router.push({ pathname: '/(customer)/dish/[id]', params: { id: item.id } } as any)}
+        onPress={() => {
+            setSelectedDish(item);
+            setDetailModalVisible(true);
+        }}
     >
       <View style={styles.trendImageContainer}>
         <Image source={{ uri: item.image_url || 'https://via.placeholder.com/400' }} style={styles.trendImage} />
@@ -308,6 +318,13 @@ export default function CustomerHomeScreen() {
 
         {/* Bottom Spacer for Tab Bar */}
         <View style={{ height: 100 }} />
+
+        {/* Dish Detail Modal */}
+        <DishDetailModal 
+            visible={detailModalVisible} 
+            onClose={() => setDetailModalVisible(false)} 
+            item={selectedDish} 
+        />
 
       </ScrollView>
     </SafeAreaView>
