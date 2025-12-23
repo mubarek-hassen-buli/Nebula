@@ -169,6 +169,7 @@ export default function CustomerHomeScreen() {
         
         {/* Header / Search */}
         <View style={styles.header}>
+            <Text style={styles.headerLogo}>Nebula</Text>
             <View style={styles.searchBar}>
                 <Ionicons name="search" size={20} color="#9CA3AF" />
                 <TextInput 
@@ -341,6 +342,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 24,
+  },
+  headerLogo: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#F59E0B',
+    marginBottom: 16,
   },
   searchBar: {
     flexDirection: 'row',
