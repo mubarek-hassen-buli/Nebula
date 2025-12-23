@@ -1,4 +1,5 @@
 import { Session, User } from '@supabase/supabase-js';
+import { AppState } from 'react-native';
 import { create } from 'zustand';
 import { getUserProfile, upsertProfile } from '../lib/supabase/auth';
 import { supabase } from '../lib/supabase/client';
@@ -128,5 +129,14 @@ supabase.auth.onAuthStateChange((event, session) => {
     store.setProfile(null);
   } else if (event === 'TOKEN_REFRESHED' && session) {
     store.setSession(session);
+  }
+});
+
+// Listen to AppState (Critical for React Native session persistence)
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh();
+  } else {
+    supabase.auth.stopAutoRefresh();
   }
 });
