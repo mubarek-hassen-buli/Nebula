@@ -344,10 +344,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   headerLogo: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'Billabong',
+    fontSize: 40,
     color: '#F59E0B',
     marginBottom: 16,
+    paddingLeft: 4,
   },
   searchBar: {
     flexDirection: 'row',
