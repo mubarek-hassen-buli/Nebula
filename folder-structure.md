@@ -1,226 +1,194 @@
-# 📁 Nebula Delivery - Folder Structure
+# Folder Structure
 
-## Root Directory Structure
+## Project Layout
 
 ```
-Nebula-Delivery-v2/
-├── app/                          # Expo Router screens
-│   ├── (auth)/                   # Authentication screens
-│   │   ├── _layout.tsx          # Auth stack layout
-│   │   ├── login.tsx            # OTP login screen
-│   │   └── verify-otp.tsx       # OTP verification screen
+Nebula-Delivery/
+│
+├── app/                              # Expo Router Screens
+│   ├── _layout.tsx                   # Root layout with auth routing
+│   ├── modal.tsx                     # Modal screen
 │   │
-│   ├── (customer)/              # Customer app screens
-│   │   ├── (tabs)/              # Bottom tab navigation
-│   │   │   ├── _layout.tsx      # Tab layout
-│   │   │   ├── home.tsx         # Restaurant list
-│   │   │   ├── orders.tsx       # Order history & tracking
-│   │   │   ├── rewards.tsx      # Rewards & points
-│   │   │   └── profile.tsx      # Profile & settings
+│   ├── (auth)/                       # Authentication Flow
+│   │   ├── _layout.tsx               # Auth stack layout
+│   │   ├── login.tsx                 # Email input screen
+│   │   └── verify-otp.tsx            # OTP verification
+│   │
+│   ├── (customer)/                   # Customer App
+│   │   ├── _layout.tsx               # Customer layout
+│   │   ├── (tabs)/                   # Bottom Tab Navigation
+│   │   │   ├── _layout.tsx           # Tab configuration
+│   │   │   ├── index.tsx             # Home / Restaurant list
+│   │   │   ├── cart.tsx              # Shopping cart
+│   │   │   ├── orders.tsx            # Order history
+│   │   │   └── profile.tsx           # User profile
 │   │   │
-│   │   ├── restaurant/          # Restaurant screens
-│   │   │   └── [id].tsx         # Restaurant detail & menu
-│   │   │
-│   │   ├── cart.tsx             # Shopping cart
-│   │   ├── checkout.tsx         # Checkout & scheduling
-│   │   ├── order-detail/        # Order tracking
-│   │   │   └── [id].tsx         # Order detail screen
-│   │   └── review/              # Review screens
-│   │       └── [restaurantId].tsx
+│   │   ├── restaurant/
+│   │   │   └── [id].tsx              # Restaurant detail & menu
+│   │   ├── dish/
+│   │   │   └── [id].tsx              # Dish detail
+│   │   ├── orders/
+│   │   │   └── [id].tsx              # Order tracking
+│   │   └── profile/
+│   │       └── edit.tsx              # Edit profile
 │   │
-│   ├── (admin)/                 # Admin dashboard screens
-│   │   ├── (tabs)/              # Admin tab navigation
-│   │   │   ├── _layout.tsx      # Admin tab layout
-│   │   │   ├── dashboard.tsx    # Admin overview
-│   │   │   ├── restaurants.tsx  # Restaurant management
-│   │   │   ├── orders.tsx       # Order management
-│   │   │   └── menu.tsx         # Menu management
-│   │   │
-│   │   ├── restaurant/          # Restaurant CRUD
-│   │   │   ├── create.tsx       # Create restaurant
-│   │   │   └── edit/[id].tsx    # Edit restaurant
-│   │   │
-│   │   └── menu-item/           # Menu item CRUD
-│   │       ├── create.tsx       # Create menu item
-│   │       └── edit/[id].tsx    # Edit menu item
+│   └── (admin)/                      # Admin Dashboard
+│       ├── (tabs)/                   # Admin Tab Navigation
+│       │   ├── _layout.tsx           # Tab configuration
+│       │   ├── dashboard.tsx         # Overview & stats
+│       │   ├── restaurants.tsx       # Restaurant management
+│       │   ├── orders.tsx            # Order management
+│       │   └── menu.tsx              # Menu management
+│       │
+│       ├── restaurant/
+│       │   └── create.tsx            # Create restaurant
+│       ├── menu-item/
+│       │   └── create.tsx            # Create menu item
+│       └── orders/
+│           └── [id].tsx              # Order detail
+│
+├── components/                       # Reusable Components
+│   ├── auth/
+│   │   ├── AuthGuard.tsx             # Role-based protection
+│   │   └── OTPInput.tsx              # OTP input field
 │   │
-│   ├── _layout.tsx              # Root layout with role routing
-│   └── +not-found.tsx           # 404 screen
-│
-├── components/                   # Reusable components
-│   ├── auth/                    # Authentication components
-│   │   ├── OTPInput.tsx         # OTP input field
-│   │   └── AuthGuard.tsx        # Role-based guard
+│   ├── admin/
+│   │   ├── QuickActions.tsx          # Dashboard actions
+│   │   └── StatsCard.tsx             # Statistics card
 │   │
-│   ├── customer/                # Customer-specific components
-│   │   ├── RestaurantCard.tsx   # Restaurant card
-│   │   ├── MenuItemCard.tsx     # Menu item card
-│   │   ├── CartItem.tsx         # Cart item row
-│   │   ├── OrderCard.tsx        # Order card
-│   │   ├── OrderStatusBadge.tsx # Status badge
-│   │   ├── ReviewCard.tsx       # Review display
-│   │   ├── RatingStars.tsx      # Star rating component
-│   │   └── DateTimePicker.tsx   # Schedule picker
+│   ├── ui/
+│   │   ├── collapsible.tsx           # Collapsible panel
+│   │   ├── icon-symbol.tsx           # Icon component
+│   │   └── icon-symbol.ios.tsx       # iOS-specific icons
 │   │
-│   ├── admin/                   # Admin-specific components
-│   │   ├── RestaurantForm.tsx   # Restaurant form
-│   │   ├── MenuItemForm.tsx     # Menu item form
-│   │   ├── OrderTable.tsx       # Orders table
-│   │   ├── StatusDropdown.tsx   # Status selector
-│   │   └── StatsCard.tsx        # Dashboard stats
+│   ├── LanguageSelector.tsx          # Language picker
+│   ├── external-link.tsx             # External link handler
+│   ├── haptic-tab.tsx                # Haptic feedback tab
+│   ├── hello-wave.tsx                # Wave animation
+│   ├── parallax-scroll-view.tsx      # Parallax scrolling
+│   ├── themed-text.tsx               # Themed text
+│   └── themed-view.tsx               # Themed view
+│
+├── lib/                              # Core Libraries
+│   ├── supabase/
+│   │   ├── client.ts                 # Supabase client init
+│   │   ├── auth.ts                   # Auth helpers
+│   │   ├── storage.ts                # File upload helpers
+│   │   └── test-connection.ts        # Connection test
 │   │
-│   ├── shared/                  # Shared components
-│   │   ├── Button.tsx           # Custom button
-│   │   ├── Input.tsx            # Custom input
-│   │   ├── Card.tsx             # Card container
-│   │   ├── LoadingSpinner.tsx   # Loading indicator
-│   │   ├── EmptyState.tsx       # Empty state
-│   │   ├── ErrorBoundary.tsx    # Error boundary
-│   │   └── ImageUpload.tsx      # Image upload
+│   ├── hooks/
+│   │   ├── useAuth.ts                # Authentication hook
+│   │   ├── useRestaurants.ts         # Restaurants data
+│   │   ├── useMenu.ts                # Menu data
+│   │   └── useOrders.ts              # Orders data
 │   │
-│   └── ui/                      # Base UI components
-│       ├── button.tsx           # (existing)
-│       ├── input.tsx            # (existing)
-│       └── card.tsx             # (existing)
-│
-├── lib/                         # Core utilities & configs
-│   ├── supabase/                # Supabase configuration
-│   │   ├── client.ts            # Supabase client
-│   │   ├── auth.ts              # Auth helpers
-│   │   ├── storage.ts           # Storage helpers
-│   │   └── types.ts             # Database types
+│   ├── validation/
+│   │   ├── auth.ts                   # Auth schemas
+│   │   ├── restaurant.ts             # Restaurant schemas
+│   │   ├── menu.ts                   # Menu schemas
+│   │   ├── order.ts                  # Order schemas
+│   │   └── review.ts                 # Review schemas
 │   │
-│   ├── api/                     # API layer
-│   │   ├── auth.ts              # Auth API
-│   │   ├── restaurants.ts       # Restaurant API
-│   │   ├── menu.ts              # Menu API
-│   │   ├── cart.ts              # Cart API
-│   │   ├── orders.ts            # Orders API
-│   │   ├── rewards.ts           # Rewards API
-│   │   └── reviews.ts           # Reviews API
-│   │
-│   ├── hooks/                   # Custom React hooks
-│   │   ├── useAuth.ts           # Auth hook
-│   │   ├── useRestaurants.ts    # Restaurants hook
-│   │   ├── useMenu.ts           # Menu hook
-│   │   ├── useCart.ts           # Cart hook
-│   │   ├── useOrders.ts         # Orders hook
-│   │   ├── useRewards.ts        # Rewards hook
-│   │   └── useReviews.ts        # Reviews hook
-│   │
-│   ├── validation/              # Zod schemas
-│   │   ├── auth.ts              # Auth validation
-│   │   ├── restaurant.ts        # Restaurant validation
-│   │   ├── menu.ts              # Menu validation
-│   │   ├── order.ts             # Order validation
-│   │   └── review.ts            # Review validation
-│   │
-│   └── utils/                   # Utility functions
-│       ├── formatters.ts        # Format helpers
-│       ├── validators.ts        # Validation helpers
-│       ├── constants.ts         # App constants
-│       └── i18n.ts              # Internationalization
+│   └── i18n/
+│       ├── index.ts                  # i18n configuration
+│       └── locales/
+│           ├── en.json               # English
+│           ├── am.json               # Amharic
+│           └── om.json               # Oromo
 │
-├── store/                       # Zustand state management
-│   ├── authStore.ts             # Auth state
-│   ├── cartStore.ts             # Cart state
-│   ├── orderStore.ts            # Order state
-│   └── appStore.ts              # Global app state
+├── store/                            # State Management (Zustand)
+│   ├── authStore.ts                  # Auth state
+│   └── cartStore.ts                  # Cart state
 │
-├── types/                       # TypeScript types
-│   ├── database.ts              # Database types
-│   ├── models.ts                # Domain models
-│   ├── api.ts                   # API types
-│   └── navigation.ts            # Navigation types
+├── types/                            # TypeScript Definitions
+│   ├── database.ts                   # Database types
+│   ├── models.ts                     # Domain models
+│   ├── api.ts                        # API types
+│   └── navigation.ts                 # Navigation types
 │
-├── constants/                   # Constants
-│   ├── Colors.ts                # (existing)
-│   ├── config.ts                # App config
-│   └── routes.ts                # Route constants
+├── constants/                        # App Constants
+│   └── theme.ts                      # Theme colors
 │
-├── hooks/                       # Global hooks
-│   ├── use-color-scheme.ts      # (existing)
-│   ├── use-color-scheme.web.ts  # (existing)
-│   └── use-theme-color.ts       # (existing)
+├── hooks/                            # Global Hooks
+│   ├── use-color-scheme.ts           # Color scheme hook
+│   ├── use-color-scheme.web.ts       # Web color scheme
+│   └── use-theme-color.ts            # Theme color hook
 │
-├── assets/                      # Static assets
-│   ├── images/                  # Images
-│   ├── fonts/                   # Fonts
-│   └── icons/                   # Icons
+├── assets/                           # Static Assets
+│   ├── images/                       # App images
+│   └── fonts/                        # Custom fonts
 │
-├── scripts/                     # Build scripts
-│   └── reset-project.js         # (existing)
+├── scripts/                          # Utility Scripts
+│   └── reset-project.js              # Reset script
 │
-├── supabase/                    # Supabase files
-│   ├── migrations/              # SQL migrations
-│   │   └── 001_initial_schema.sql
-│   └── seed.sql                 # Seed data
-│
-├── .env                         # Environment variables
-├── .gitignore                   # Git ignore
-├── app.json                     # Expo config
-├── package.json                 # Dependencies
-├── tsconfig.json                # TypeScript config
-├── AppIdea.md                   # App documentation
-├── sql.md                       # Database schema
-└── README.md                    # Project readme
+└── [Config Files]
+    ├── .env                          # Environment variables
+    ├── .gitignore                    # Git ignore rules
+    ├── app.json                      # Expo configuration
+    ├── package.json                  # Dependencies
+    ├── tsconfig.json                 # TypeScript config
+    └── eslint.config.js              # ESLint config
 ```
 
-## Key Organizational Principles
+---
 
-### 1. **Feature-Based Organization**
-- Customer and admin features are separated
-- Each feature has its own screens, components, and logic
+## Architecture Principles
 
-### 2. **Role-Based Routing**
-- `(auth)` - Authentication flow
-- `(customer)` - Customer app
-- `(admin)` - Admin dashboard
+### 1. Role-Based Routing
 
-### 3. **Component Hierarchy**
-- `components/shared/` - Used by both customer and admin
-- `components/customer/` - Customer-specific
-- `components/admin/` - Admin-specific
-- `components/ui/` - Base UI primitives
+| Route Group | Purpose |
+|-------------|---------|
+| `(auth)` | Login & verification |
+| `(customer)` | Customer app screens |
+| `(admin)` | Admin dashboard |
 
-### 4. **API Layer**
-- Centralized in `lib/api/`
-- Each domain has its own API file
-- Uses React Query for caching and state management
+### 2. Component Organization
 
-### 5. **State Management**
-- Zustand stores for global state
-- React Query for server state
-- Local state for UI-only state
+| Folder | Contents |
+|--------|----------|
+| `components/auth/` | Auth-related components |
+| `components/admin/` | Admin-specific components |
+| `components/ui/` | Base UI primitives |
 
-### 6. **Type Safety**
-- Database types generated from Supabase
-- Domain models in `types/models.ts`
-- API types for request/response
+### 3. Data Flow
 
-### 7. **Validation**
-- Zod schemas in `lib/validation/`
-- Reusable across client and server
+```
+Supabase → lib/hooks/ → Zustand Store → Components
+```
+
+### 4. State Management
+
+| Type | Solution |
+|------|----------|
+| Server State | React Query (via hooks) |
+| Client State | Zustand stores |
+| Local State | React useState |
+
+### 5. Validation
+
+All input validation uses Zod schemas in `lib/validation/`.
+
+---
 
 ## Navigation Structure
 
 ```
-Root
-├── Auth Stack (not authenticated)
+Root Layout
+│
+├── Auth Stack (unauthenticated)
 │   ├── Login
 │   └── Verify OTP
 │
 ├── Customer Stack (role: customer)
 │   ├── Tabs
-│   │   ├── Home (Restaurant List)
+│   │   ├── Home
+│   │   ├── Cart
 │   │   ├── Orders
-│   │   ├── Rewards
 │   │   └── Profile
-│   ├── Restaurant Detail
-│   ├── Cart
-│   ├── Checkout
-│   ├── Order Detail
-│   └── Review
+│   └── Modals
+│       ├── Restaurant Detail
+│       ├── Dish Detail
+│       └── Order Detail
 │
 └── Admin Stack (role: admin)
     ├── Tabs
@@ -228,15 +196,31 @@ Root
     │   ├── Restaurants
     │   ├── Orders
     │   └── Menu
-    ├── Create/Edit Restaurant
-    └── Create/Edit Menu Item
+    └── Forms
+        ├── Create Restaurant
+        └── Create Menu Item
 ```
 
-## File Naming Conventions
+---
 
-- **Screens**: `kebab-case.tsx` (e.g., `order-detail.tsx`)
-- **Components**: `PascalCase.tsx` (e.g., `RestaurantCard.tsx`)
-- **Hooks**: `camelCase.ts` with `use` prefix (e.g., `useAuth.ts`)
-- **Stores**: `camelCase.ts` with `Store` suffix (e.g., `authStore.ts`)
-- **Types**: `camelCase.ts` (e.g., `database.ts`)
-- **Utils**: `camelCase.ts` (e.g., `formatters.ts`)
+## Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Screens | kebab-case | `verify-otp.tsx` |
+| Components | PascalCase | `StatsCard.tsx` |
+| Hooks | camelCase + use | `useAuth.ts` |
+| Stores | camelCase + Store | `authStore.ts` |
+| Types | camelCase | `database.ts` |
+
+---
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `app/_layout.tsx` | Root layout, auth check |
+| `lib/supabase/client.ts` | Supabase initialization |
+| `store/authStore.ts` | User session state |
+| `store/cartStore.ts` | Shopping cart state |
+| `constants/theme.ts` | App theme colors |

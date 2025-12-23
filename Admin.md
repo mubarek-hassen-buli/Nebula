@@ -1,216 +1,174 @@
-1️⃣ Admin Behavior (Exactly As You Want)
-Admin Dashboard → Restaurants List
+# Admin Dashboard Guide
 
-Each restaurant card shows:
+## Overview
 
-Restaurant name
+The Admin Dashboard provides complete control over restaurants, menus, and orders. Admins can manage all platform content through an intuitive interface.
 
-Status: Open / Closed
+---
 
-Buttons:
+## Restaurant Management
 
-✏️ Edit
+### Restaurant List View
 
-🍽 Manage Dishes
+Each restaurant card displays:
 
-❌ Delete
+| Element | Description |
+|---------|-------------|
+| Name | Restaurant name |
+| Status | Open / Closed indicator |
+| Edit | Modify restaurant details |
+| Manage Dishes | Access menu management |
+| Delete | Remove restaurant |
+| Toggle | Switch availability |
 
-🔄 Toggle Available / Unavailable
+### Restaurant Actions
 
-✅ This is perfect UX for admin.
+#### Edit Restaurant
 
-Restaurant Card Actions
-🏪 Edit Restaurant
+Admins can update:
+- Name
+- Description
+- Image
+- Operating hours
 
-Admin can update:
+#### Open / Close Restaurant
 
-Name
+Controls customer visibility:
 
-Description
+```
+is_open = true  → Customers can order
+is_open = false → Restaurant hidden from customers
+```
 
-Image
+---
 
-Open / close times
+## Menu Management
 
-🔄 Open / Close Restaurant
+### Accessing Menu
 
-This controls visibility to customers.
+When admin taps **"Manage Dishes"**:
+1. App navigates to dish management screen
+2. `restaurant_id` is automatically passed
+3. All dishes created belong to that restaurant
 
-is_open = true → customers can order
-is_open = false → restaurant hidden / closed
+### Adding a Dish
 
-🍽 Manage Dishes (Important)
+| Field | Type | Required |
+|-------|------|----------|
+| Name | Text | Yes |
+| Description | Text | No |
+| Price | Number | Yes |
+| Image | File Upload | No |
+| Category | Dropdown | Yes |
 
-When admin taps Manage Dishes:
+### Global Categories (MVP)
 
-👉 The app already knows:
+Categories are shared across all restaurants:
 
-restaurant_id
+| Category |
+|----------|
+| Burgers |
+| Pizza |
+| Pasta |
+| Chicken |
+| Salads |
+| Sides |
+| Desserts |
+| Drinks |
 
+**Benefits:**
+- Simpler setup
+- Consistent user experience
+- Easier to manage
 
-So:
+---
 
-Admin does NOT select restaurant again
+## Database Design
 
-Every dish created automatically belongs to that restaurant
+### Categories Table (Global)
 
-Add Dish Screen (Inside Restaurant)
-
-Admin fills:
-
-Dish name
-
-Image
-
-Price
-
-Description
-
-Category (dropdown → GLOBAL categories)
-
-Clicks Save → Dish is created.
-
-2️⃣ Key Change: GLOBAL Categories (MVP Choice)
-What you want now:
-
-Categories are same for all restaurants
-
-Example:
-
-Burgers
-
-Pizza
-
-Drinks
-
-Desserts
-
-✔ Easier
-✔ Faster
-✔ No per-restaurant setup
-
-Old Way (❌ not MVP)
-Restaurant → Categories → Meals
-
-New MVP Way (✅ simple)
-Global Categories → Meals → Restaurant
-
-3️⃣ UPDATED DATABASE DESIGN (IMPORTANT)
-
-We will remove restaurant_id from categories.
-
-✅ Categories Table (GLOBAL)
-drop table if exists categories cascade;
-
-create table categories (
-  id uuid primary key default gen_random_uuid(),
-  name text not null unique
+```sql
+CREATE TABLE categories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL UNIQUE
 );
+```
 
+### Menu Items Table
 
-✔ One-time setup
-✔ No restaurant link
-
-✅ Seed Categories (Once)
-insert into categories (name)
-values
-  ('Burgers'),
-  ('Pizza'),
-  ('Pasta'),
-  ('Chicken'),
-  ('Salads'),
-  ('Sides'),
-  ('Desserts'),
-  ('Drinks');
-
-✅ Menu Items (UPDATED)
-drop table if exists menu_items cascade;
-
-create table menu_items (
-  id uuid primary key default gen_random_uuid(),
-
-  restaurant_id uuid not null
-    references restaurants(id) on delete cascade,
-
-  category_id uuid not null
-    references categories(id),
-
-  name text not null,
-  description text,
-  price numeric(10,2) not null,
-  image_url text,
-
-  is_available boolean default true,
-  created_at timestamp with time zone default now()
+```sql
+CREATE TABLE menu_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  restaurant_id UUID NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE,
+  category_id UUID NOT NULL REFERENCES categories(id),
+  name TEXT NOT NULL,
+  description TEXT,
+  price NUMERIC(10,2) NOT NULL,
+  image_url TEXT,
+  is_available BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
+```
 
+### Restaurant Availability
 
-✔ Dish belongs to:
+```sql
+ALTER TABLE restaurants
+ADD COLUMN IF NOT EXISTS is_open BOOLEAN DEFAULT TRUE;
+```
 
-One restaurant
+---
 
-One global category
+## Navigation Flow
 
-✅ Restaurants Table (Availability)
+```
+Admin Dashboard
+└── Restaurants List
+    └── Restaurant Card
+        ├── Edit → Edit Restaurant Screen
+        ├── Delete → Confirmation → Remove
+        ├── Toggle → Open/Close Status
+        └── Manage Dishes → Dish List
+            ├── Add Dish → Create Form
+            └── Edit Dish → Edit Form
+```
 
-Make sure this exists:
+---
 
-alter table restaurants
-add column if not exists is_open boolean default true;
+## Permissions (RLS)
 
-4️⃣ How “Manage Dishes” Works (Logic)
-Admin taps “Manage Dishes”
+| Action | Admin | Customer |
+|--------|-------|----------|
+| View Restaurants | ✅ | ✅ |
+| Create Restaurant | ✅ | ❌ |
+| Edit Restaurant | ✅ | ❌ |
+| Delete Restaurant | ✅ | ❌ |
+| View Menu | ✅ | ✅ |
+| Create Menu Item | ✅ | ❌ |
+| Edit Menu Item | ✅ | ❌ |
+| Delete Menu Item | ✅ | ❌ |
 
-App navigates to:
+---
 
-/admin/restaurants/{restaurant_id}/dishes
+## Mental Model
 
-When adding a dish:
-insert into menu_items ({
-  restaurant_id,
-  category_id,
-  name,
-  price,
-  image_url
-})
-
-
-🚫 No restaurant picker
-✔ Clean UX
-
-5️⃣ Category Dropdown Logic (Very Simple)
-select * from categories;
-
-
-Same categories for all restaurants.
-
-6️⃣ RLS IMPACT (Good News)
-
-Your existing RLS for menu_items still works.
-
-Admins:
-
-Create / edit / delete dishes
-
-Customers:
-
-Read only
-
-No change needed.
-
-🧠 Final Mental Model (REMEMBER THIS)
+```
 Admin
- └── Creates Restaurant
-       ├── Open / Close
-       ├── Edit
-       ├── Delete
-       └── Manage Dishes
-             └── Dish
-                  ├── Name
-                  ├── Image
-                  ├── Price
-                  └── Category (GLOBAL)
+└── Restaurant
+    ├── Open / Close
+    ├── Edit Details
+    ├── Delete
+    └── Manage Dishes
+        └── Dish
+            ├── Name
+            ├── Description
+            ├── Price
+            ├── Image
+            └── Category (Global)
+```
 
-✅ Final Summary (One Paragraph)
+---
 
-For MVP, categories are global and created once. Admin creates a restaurant, manages it from a card (edit, delete, open/close), and when tapping “Manage Dishes,” every dish created automatically belongs to that restaurant and uses a global category list. This simplifies the UI, database, and admin flow while remaining scalable later.
+## Summary
+
+For MVP, categories are global and created once. Admins create restaurants, manage them from cards (edit, delete, open/close), and when tapping "Manage Dishes," every dish created automatically belongs to that restaurant using the global category list. This approach simplifies the UI, database, and admin flow while remaining scalable for future enhancements.
