@@ -51,23 +51,36 @@ export default function OrderDetailsScreen() {
           <Text style={styles.timeText}>Placed at: {new Date(order.created_at).toLocaleString()}</Text>
           
           <View style={styles.actionButtons}>
-            {order.status !== 'delivered' && order.status !== 'cancelled' ? (
+            {order.status === 'pending' && (
               <>
                 <TouchableOpacity 
-                  style={styles.primaryButton}
-                  onPress={() => handleUpdateStatus('delivered')}
+                  style={[styles.primaryButton, { backgroundColor: '#3B82F6' }]}
+                  onPress={() => handleUpdateStatus('preparing')}
                 >
-                  <Text style={styles.primaryButtonText}>Mark Delivered</Text>
+                  <Text style={styles.primaryButtonText}>Approve (Prepare)</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                   style={styles.secondaryButton}
                   onPress={() => handleUpdateStatus('cancelled')}
                 >
-                  <Text style={styles.secondaryButtonText}>Cancel Order</Text>
+                  <Text style={styles.secondaryButtonText}>Reject Order</Text>
                 </TouchableOpacity>
               </>
-            ) : (
-                <Text style={{color: '#9CA3AF'}}>Order is {order.status}</Text>
+            )}
+
+            {order.status === 'preparing' && (
+              <TouchableOpacity 
+                style={styles.primaryButton}
+                onPress={() => handleUpdateStatus('delivered')}
+              >
+                <Text style={styles.primaryButtonText}>Mark Delivered</Text>
+              </TouchableOpacity>
+            )}
+
+            {(order.status === 'delivered' || order.status === 'cancelled') && (
+                <Text style={{color: '#9CA3AF', textAlign: 'center', width: '100%'}}>
+                  Order is {order.status}
+                </Text>
             )}
           </View>
         </View>
